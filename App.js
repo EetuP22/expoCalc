@@ -1,21 +1,32 @@
 import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
-import { StyleSheet, Text, View, Button, TextInput } from 'react-native';
+import { StyleSheet, Text, View, Button, TextInput, FlatList } from 'react-native';
 
 export default function App() {
 
   const [num1, setNum1] = useState("");
   const [num2, setNum2] = useState("");
   const [result, setResult] = useState("");
+  const [history, setHistory] = useState([]);
 
   const handleAddition = () => {
     const sum = parseFloat(num1) + parseFloat(num2);
     setResult(isNaN(sum) ? 0: sum);
+
+    if (!isNaN(sum)) {
+      const newEntry = `${num1} + ${num2} = ${sum}`;
+      setHistory([newEntry, ...history]);
+    }
   };
 
   const handleSubstraction = () => {
     const diff = parseFloat(num1) - parseFloat(num2);
     setResult(isNaN(diff) ? 0: diff);
+
+    if (!isNaN(diff)) {
+      const newEntry = `${num1} - ${num2} = ${diff}`;
+      setHistory([newEntry, ...history]);
+    }
   };
 
   return (
@@ -40,6 +51,14 @@ export default function App() {
         <Button title ='+' onPress={handleAddition}/>
         <Button title = '-' onPress={handleSubstraction}/>
        </View>
+
+        <Text style={{marginTop: 20, fontSize: 16, fontWeight: 'bold'}}>History:</Text>
+        <FlatList
+          data={history}
+          renderItem={({ item }) => <Text style={{ textAlign: 'center' }}>{item}</Text>}
+          style={{ marginTop: 10, width: '80%' }}
+        />
+
       <StatusBar style="auto" />
        
     </View>
@@ -52,11 +71,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+    paddingTop: 40,
   },
 
   resultText: {
     fontSize: 18,
     marginBottom: 10
+    
   },
 
   row: {
