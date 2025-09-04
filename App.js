@@ -1,89 +1,18 @@
-import { StatusBar } from 'expo-status-bar';
-import { useState } from 'react';
-import { StyleSheet, Text, View, Button, TextInput, FlatList } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import Calculator from './Components/Calculator';
+import History from './Components/History';
+
+const Stack = createNativeStackNavigator();
 
 export default function App() {
-
-  const [num1, setNum1] = useState("");
-  const [num2, setNum2] = useState("");
-  const [result, setResult] = useState("");
-  const [history, setHistory] = useState([]);
-
-  const handleAddition = () => {
-    const sum = parseFloat(num1) + parseFloat(num2);
-    setResult(isNaN(sum) ? 0: sum);
-
-    if (!isNaN(sum)) {
-      const newEntry = `${num1} + ${num2} = ${sum}`;
-      setHistory([newEntry, ...history]);
-    }
-  };
-
-  const handleSubstraction = () => {
-    const diff = parseFloat(num1) - parseFloat(num2);
-    setResult(isNaN(diff) ? 0: diff);
-
-    if (!isNaN(diff)) {
-      const newEntry = `${num1} - ${num2} = ${diff}`;
-      setHistory([newEntry, ...history]);
-    }
-  };
-
   return (
-    <View style={styles.container}>
-      <Text style={styles.resultText}>Result: {result}</Text>
-      <TextInput
-       style={{ width: 200, borderColor: 'gray', borderWidth: 1, marginBottom: 10, padding: 5 }}
-       keyboardType='numeric'
-       placeholder='First number'
-       value = {num1}
-       onChangeText={setNum1}
-       />
-
-       <TextInput
-       style={{ width: 200, borderColor: 'gray', borderWidth: 1, marginBottom: 10, padding: 5 }}
-       keyboardType='numeric'
-       placeholder='Second number'
-       value = {num2}
-       onChangeText={setNum2}
-       />
-       <View style={styles.row}>
-        <Button title ='+' onPress={handleAddition}/>
-        <Button title = '-' onPress={handleSubstraction}/>
-       </View>
-
-        <Text style={{marginTop: 20, fontSize: 16, fontWeight: 'bold'}}>History:</Text>
-        <FlatList
-          data={history}
-          renderItem={({ item }) => <Text style={{ textAlign: 'center' }}>{item}</Text>}
-          style={{ marginTop: 10, width: '80%' }}
-        />
-
-      <StatusBar style="auto" />
-       
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen name="Calculator" component={Calculator} />
+        <Stack.Screen name="History" component={History} />
+      </Stack.Navigator>
+    </NavigationContainer>
+      
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingTop: 40,
-  },
-
-  resultText: {
-    fontSize: 18,
-    marginBottom: 10
-    
-  },
-
-  row: {
-    flexDirection: 'row',
-    marginTop: 10,
-    justifyContent: 'space-between',
-    width: 50
-  },
-});
